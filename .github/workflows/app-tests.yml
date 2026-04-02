@@ -4,9 +4,6 @@ on: push
 
 jobs:
   sample_app_tests:
-    name: Run Tests Using Jest
-    runs-on: ubuntu-latest
-    with
     name: "Run Tests — Node ${{ matrix.node }} on ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     strategy:
