@@ -1,16 +1,37 @@
 name: Sample App Tests
-
-on: push 
+on: push
 
 jobs:
   sample_app_tests:
-    name: "Run Tests — Node ${{ matrix.node }} on ${{ matrix.os }}"
+    # แก้ไขชื่อ Job ให้แสดงค่าจาก Matrix [cite: 566]
+    name: "Run Tests - Node ${{ matrix.node }} on ${{ matrix.os }}"
+    
+    # กำหนดให้รันบน OS ตามที่ Matrix ระบุ [cite: 566]
     runs-on: ${{ matrix.os }}
+    
+    # ส่วนของ Matrix Strategy [cite: 567]
     strategy:
-    fail-fast: false
-    matrix:
-    os: [ubuntu-latest, windows-latest]
-    node: [18, 20, 22]
-    exclude:
-    - os: windows-latest
-    node: 18
+      fail-fast: false 
+      matrix:
+        os: [ubuntu-latest, windows-latest] 
+        node: [18, 20, 22] 
+        exclude:
+          - os: windows-latest
+            node: 18
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      # เพิ่มขั้นตอน Setup Node.js ให้ตรงตามเวอร์ชันใน Matrix
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          
+      - name: Install dependencies
+        working-directory: sample-app
+        run: npm install
+        
+      - name: Run tests
+        working-directory: sample-app
+        run: npm test
